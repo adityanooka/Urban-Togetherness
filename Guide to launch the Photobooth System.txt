@@ -1,0 +1,112 @@
+*Photobooth Setup Guide* 🚀
+
+This guide provides step-by-step instructions to set up the photobooth software environment, run the application, and troubleshoot common issues.
+
+*1. Initial Software Installation*
+
+*a. Install Python*
+
+1.  Go to the official Python website: `python.org`
+2.  Download the latest stable version for Windows (e.g., Python 3.11 or newer).
+3.  Run the installer. *Important*: On the first screen of the installation, make sure to check the box that says *"Add Python to PATH"*.
+4.  Complete the installation with the default settings.
+
+*b. Install Git and Git Bash*
+
+1.  Go to the Git SCM website: `git-scm.com`
+2.  Download and install Git for Windows, accepting the default settings. This also installs *Git Bash*, which we will use as our terminal.
+
+*c. Get the Project Files*
+Copy the `photo-booth` project folder to a memorable location, like `C:\Users\YourUser\Desktop\`.
+
+-----
+
+*2. Setting Up the Project Environment*
+
+1.  *Open Git Bash*: Navigate to your project folder. Right-click inside the `photo-booth` folder and select *"Git Bash Here"*.
+2.  *Create a Virtual Environment*: In the Git Bash terminal, run:
+    `python -m venv venv`
+    *Note: This creates a private 'toolbox' (`venv`) for our project to keep its code libraries separate from other Python projects.*
+3.  *Activate the Environment*: To start using it, run:
+    `source venv/Scripts/activate`
+    (Your command prompt will now start with `(venv)`)
+4.  *Install Required Packages*: With the environment active, run this single command:
+    `pip install fastapi "uvicorn[standard]" python-multipart websockets Pillow qrcode pywin32`
+
+-----
+
+*3. Running the Photobooth Application*
+
+To run the photobooth, you need to open *two separate Git Bash terminals*.
+
+*Terminal 1: Run the FastAPI Backend Server*
+This server handles image processing and printing. In the first terminal, run these commands one by one.
+
+```
+# Change this path to where your folder is located
+cd C:\Users\adity\Desktop\photo-booth
+
+# Activate the environment
+source venv/Scripts/activate
+
+# Run the backend server
+fastapi dev api_text_below_save.py
+```
+
+*Terminal 2: Serve the HTML Frontend*
+This server provides the user interface. In the second terminal, run these commands one by one.
+
+```
+# Change this path to where your folder is located
+cd C:\Users\adity\Desktop\photo-booth
+
+# Activate the environment
+source venv/Scripts/activate
+
+# Run the frontend server
+python -m http.server 5500
+```
+
+*Accessing the Photobooth*
+Once both servers are running, open your web browser and go to:
+`http://localhost:5500/7thIteration.html`
+
+-----
+
+*4. Important Operational Notes & Checks*
+
+  * *Essential Files & Folders*: For the project to work, a new user must have these core components in the `photo-booth` folder:
+
+      * 📁 `static/` (Contains all images, logos, and fonts)
+      * 📄 `7thIteration.html` (The frontend user interface)
+      * 📄 `api_text_below_save.py` (The backend server)
+        *Note: The `venv` and `__pycache__` folders are generated automatically during setup and do not need to be copied over.*
+
+  * *Locking Image Settings*: On the final print page, you can adjust the brightness, contrast, etc. If you find a good setting for the room's lighting, you can use the *"Lock Settings"* toggle. This will save your tweaks and automatically apply them to every new photo you take, ensuring a consistent look without needing to adjust every time.
+
+  * *OBSBOT Camera App*: For best results, run the *OBSBOT camera application* to control settings like ultra-wide zoom. Keep this app running in the background.
+
+  * *Monitor a lot*: Always have the `static` folder, the *Printer Queue*, and *Printing Preferences* windows open on screen to monitor operations.
+
+  * *⚠️ Important UI Note*: Do *not* click the language (DE/EN) button while the photo countdown timer is running, as this can interrupt the process. You can change the language freely before or after the countdown.
+
+-----
+
+*5. Troubleshooting Common Issues*
+
+*Issue: Printer is Slow or Jobs Get Stuck ("Spooling")*
+*Solution: Clear the Print Spooler*
+
+1.  Press the Windows Key, type `Services`, and press Enter.
+2.  Find *Print Spooler*. Right-click it and select *Stop*.
+3.  In File Explorer, go to `C:\Windows\System32\spool\PRINTERS` and delete all files inside.
+4.  Go back to Services, right-click *Print Spooler*, and select *Start*.
+
+*Issue: Printer Not Responding or Lights are Off*
+
+1.  Ensure the printer's *blue (Power) and green (Status) lights* are both solid.
+2.  If not, press and hold the power button for 3 seconds.
+3.  If using a new roll of paper, send 3-4 test prints first to calibrate.
+
+*Developer Pro-Tip* 👨‍💻
+Using a code editor like *VS Code* can make this process easier. You can open the `photo-booth` folder in VS Code and use its integrated terminal (Terminal -\> New Terminal). You can even split the terminal into two panes to run both servers side-by-side in the same window.

@@ -1,0 +1,13 @@
+# --- Heavy Folders (IGNORE THESE) ---
+venv/
+BACKUPS/
+__pycache__/
+
+# --- Temporary Files ---
+*.pyc
+.DS_Store
+
+# --- Generated Photos (Don't upload users' faces) ---
+static/photobooth_*.jpg
+static/photobooth_*.png
+static/temp_*.png

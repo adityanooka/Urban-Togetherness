@@ -1,0 +1,2051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanTogetherness Photobooth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cascadia+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cascadia Mono', monospace;
+            /* Three solid horizontal stripes background */
+            background: linear-gradient(to right, #cf417b 0%, #cf417b 33.33%, #8bba3a 33.33%, #8bba3a 66.66%, #dfa13c 66.66%, #dfa13c 100%);
+            min-height: 100vh;
+            padding: 20px; /* Base padding for body */
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Container - Enhanced Glassmorphism, Wider, Flexible Height */
+        .container {
+            max-width: 1800px; /* Increased max-width for larger screens */
+            width: 95%; /* Fluid width */
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.08); /* More translucent */
+            backdrop-filter: blur(40px); /* Stronger blur */
+            -webkit-backdrop-filter: blur(40px);
+            border-radius: 32px;
+            padding: clamp(30px, 5vw, 60px); /* Responsive padding */
+            /* Softer, layered shadow for depth */
+            box-shadow: 0 50px 150px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            min-height: 600px; /* Minimum height */
+            position: relative;
+            overflow: hidden; /* Keep overflow hidden for container */
+            display: flex; /* Use flexbox for direct child pages */
+            flex-direction: column;
+            justify-content: space-between; /* Distribute space between header and content */
+        }
+
+        /* Header - Precise Alignment */
+        .header {
+            display: grid;
+            /* Logo1 | Go Back | Camera Select | Group Photo | Logo2 */
+            grid-template-columns: auto 1fr auto 1fr auto; 
+            align-items: center;
+            justify-items: center;
+            margin-bottom: clamp(30px, 5vw, 60px); /* Responsive margin below header */
+            padding-bottom: clamp(15px, 2vw, 30px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.191);
+            min-height: 100px;
+            gap: 15px; /* Gap between header elements */
+        }
+        .header .logo-left {
+            grid-column: 1; /* Place logo1 first */
+            justify-self: start;
+        }
+        .header .go-back-btn-header { /* New header go back button */
+            grid-column: 2;
+            justify-self: end; /* Align to the right of its cell */
+            margin-right: 20px; /* Space between go back and camera selector */
+        }
+        .header .camera-select-container {
+            grid-column: 3; /* Camera select in the middle */
+            justify-self: center;
+        }
+        .header .group-photo-btn-header { /* New header group photo button */
+            grid-column: 4;
+            justify-self: start; /* Align to the left of its cell */
+            margin-left: 20px; /* Space between camera selector and group photo */
+        }
+        .header .logo-right {
+            grid-column: 5; /* Place logo2 last */
+            justify-self: end;
+        }
+
+        .logo-left, .logo-right {
+            padding: 0;
+        }
+
+        /* Camera Select Dropdown - Aesthetic and Functional */
+        .camera-select {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 10px 20px;
+            color: #F0F0F0;
+            font-size: 16px;
+            font-weight: 400; /* Regular weight */
+            cursor: pointer;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F0F0F0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 18px;
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        .camera-select option {
+            background: rgba(255, 255, 255, 0.039); /* Darker background for options */
+            color: #000000;
+        }
+
+        .camera-select:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(207, 65, 123, 0.3); /* New color shadow */
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Welcome Title - White Text, Responsive, one line */
+        .welcome-title {
+            font-size: clamp(36px, 4.5vw, 50px); /* Responsive font size */
+            font-weight: 700; /* Bold weight */
+            text-align: center;
+            margin-bottom: clamp(30px, 4vw, 60px); /* Responsive margin */
+            color: white; /* White text as requested */
+            letter-spacing: -1px;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.016); /* Subtle shadow for white text */
+            white-space: nowrap; /* Keep on one line */
+            overflow: hidden; /* Hide overflow */
+            text-overflow: ellipsis; /* Add ellipsis if hidden */
+        }
+
+        /* Section Title - White Text */
+        .section-title {
+            font-size: clamp(28px, 3.5vw, 32px); /* Responsive font size */
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: clamp(20px, 3vw, 40px); /* Responsive margin */
+            color: white; /* White text as requested */
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Page 1 - People Selection Section styling */
+        .people-selection-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            gap: clamp(30px, 4vw, 60px);
+            margin-top: clamp(30px, 4vw, 50px);
+            flex-wrap: wrap;
+        }
+        .people-selection-container .section-title {
+            text-align: left;
+            margin: 0;
+            flex-basis: 30%; /* Give title some base width */
+            flex-shrink: 0;
+        }
+        .people-selection-buttons-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Button Grid - Centered and Spaced */
+        .button-grid {
+            display: flex;
+            justify-content: center;
+            gap: clamp(20px, 4vw, 40px); /* Responsive gap */
+            margin-bottom: clamp(15px, 2.5vw, 25px); /* Less space before instruction text */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+
+        /* Selection Buttons (Circular) - Modern Circular Cards */
+        .selection-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: clamp(120px, 15vw, 180px); /* Responsive width */
+            height: clamp(120px, 15vw, 180px); /* Responsive height */
+            color: #F0F0F0;
+            font-size: clamp(18px, 2.5vw, 22px); /* Responsive font size */
+            font-weight: 700; /* Bold weight */
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        .selection-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .selection-button:hover::before {
+            left: 100%;
+        }
+
+        .selection-button:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(207, 65, 123, 0.4), 0 0 0 2px rgba(255,255,255,0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .selection-button.selected {
+            background: linear-gradient(135deg, #cf417b, #8bba3a); 
+            border-color: rgba(255, 255, 255, 0.6);
+            color: white;
+            box-shadow: 0 30px 60px rgba(207, 65, 123, 0.6), 0 0 0 3px rgba(255,255,255,0.3);
+            transform: translateY(-8px) scale(1.06);
+        }
+
+        /* Page Transitions */
+        .page {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.8s ease-out;
+            flex-grow: 1; /* Allow pages to take available vertical space */
+            flex-direction: column; /* Ensure content stacks vertically */
+            justify-content: center; /* Center content vertically within page */
+            align-items: center; /* Center content horizontally within page */
+            padding: 20px 0; /* Add some vertical padding for content */
+            width: 100%; /* Ensure page fills its container width */
+        }
+
+        .page.active {
+            display: flex; /* Override display: none for active page */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Page 1 Live Preview Section */
+        .live-preview-section {
+            width: 60%; /* Fill container width */
+            max-width: 100%; /* Ensure it doesn't overflow */
+            /* Use aspect-ratio for consistent video sizing */
+            aspect-ratio: 16 / 9; /* Standard video aspect ratio */
+            margin: 0 auto clamp(30px, 4vw, 50px); /* Responsive margin */
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            /* Adjust padding to create an even border around the video */
+            padding: 10px; /* Initial padding, adjusted by JS for exact fit */
+        }
+        /* Ensure video fills the padded container */
+        .live-preview-section video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Ensure video is fully visible */
+            border-radius: 18px; /* Slightly smaller to fit inside padding */
+        }
+
+
+        /* Fix for mirroring: apply to all video/image elements that should NOT be mirrored */
+        #liveVideo, #video, #video5, #previewImage, #capturedPhoto, #previewImage5 {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Use contain to show full 16:9 video without cropping */
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            transform: scaleX(-1); /* Explicitly ensure no mirroring */
+        }
+        
+        .live-preview-placeholder {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 22px;
+            font-weight: 400;
+            text-align: center;
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        /* Group Photo Button on Page 1 (Transparent/Glass style) */
+        .group-photo-btn-header, .go-back-btn-header {
+            background: rgba(255, 255, 255, 0.1); /* Transparent/Glass */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Border for glass effect */
+            border-radius: 50px;
+            padding: 10px 20px; /* Smaller padding for header buttons */
+            color: white;
+            font-size: 16px; /* Smaller font for header buttons */
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2); /* Softer shadow */
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            display: block; /* Make it a block element */
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+            backdrop-filter: blur(15px); /* Glass effect */
+            -webkit-backdrop-filter: blur(15px);
+        }
+
+        .group-photo-btn-header::before, .go-back-btn-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .group-photo-btn-header:hover::before, .go-back-btn-header:hover::before {
+            left: 100%;
+        }
+
+        .group-photo-btn-header:hover, .go-back-btn-header:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); /* Softer hover shadow */
+            border-color: rgba(255, 255, 255, 0.5); /* Brighter border on hover */
+        }
+        
+        /* Page 3 & 5 Content Layout */
+        .page3-content { 
+            display: flex;
+            justify-content: center; /* Center items in the flex container */
+            align-items: stretch;
+            margin-top: clamp(20px, 3vw, 30px); /* Responsive margin */
+            gap: clamp(20px, 3vw, 30px); /* Responsive gap */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            flex-grow: 1; /* Allow this section to grow */
+            width: 100%; /* Take full width */
+        }
+
+        /* Camera and Random Image Sections - Blurred Cards */
+        .camera-section, .random-image-section {
+            flex: 1; /* Allow sections to grow */
+            min-width: clamp(300px, 40vw, 400px); /* Responsive min-width */
+            /* Use aspect-ratio for consistent video/image sizing */
+            aspect-ratio: 16 / 9; /* Standard video aspect ratio */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 28px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+            padding: 10px; /* Consistent padding for video/image containers */
+        }
+        .camera-section video, .camera-section img,
+        .random-image-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Ensure content fits without cropping */
+            border-radius: 18px; /* Slightly smaller to fit inside padding */
+        }
+
+
+        /* For Page 5, camera section should be full width */
+        #page5 .camera-section {
+            width: 100%;
+            min-width: auto;
+            max-width: 100%;
+        }
+
+        .camera-placeholder, .random-image-placeholder {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 22px;
+            font-weight: 400; /* Regular weight */
+            text-align: center;
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        /* Timer Section - Blurred Card */
+        .timer-section {
+            text-align: center;
+            margin-bottom: clamp(20px, 3vw, 30px); /* Responsive margin */
+            padding: clamp(15px, 2.5vw, 25px);
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 100%; /* Ensure it takes full width */
+            display: flex; /* Use flexbox for alignment */
+            align-items: center; /* Center horizontally */
+            justify-content: center; /* Center content */
+            flex-wrap: nowrap; /* Keep on one line */
+        }
+
+        .timer-text {
+            font-size: clamp(20px, 2.5vw, 24px);
+            font-weight: 600;
+            color: #F0F0F0;
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+            white-space: nowrap; /* Keep on one line */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 10px; /* Space between text and timer */
+        }
+
+        .timer {
+            font-size: clamp(48px, 6vw, 64px);
+            font-weight: 700; /* Bold weight */
+            color: white; /* White text for readability */
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3); /* Adjusted shadow */
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+            display: inline-block; /* Allow it to sit next to text */
+            min-width: 50px; /* Ensure space for two digits */
+            text-align: center;
+        }
+
+        /* Result Title - White Text */
+        .result-title-container {
+            width: 100%;
+            text-align: center;
+            margin-bottom: clamp(20px, 3vw, 30px); /* Responsive margin */
+            flex-grow: 1; /* Allow it to take remaining space */
+        }
+        .result-title {
+            font-size: clamp(32px, 4.5vw, 42px);
+            font-weight: 700; /* Bold weight */
+            display: inline-block;
+            color: white; /* White text as requested */
+            text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        /* Photo Result Section - Prominent Blurred Card (Page 4) */
+        .photo-result {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 28px;
+            padding: clamp(15px, 2vw, 20px); /* Responsive padding */
+            flex: 2; /* Allow it to take more space in flex-container */
+            /* Use aspect-ratio for consistent image sizing */
+            aspect-ratio: 16 / 9; /* Standard photo aspect ratio */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        }
+
+        /* Page 4 Layout - Image + Print Controls (Row) and Tweak Section (Below) */
+        .photo-and-print-controls-row {
+            display: flex;
+            justify-content: center; /* Center the two columns */
+            align-items: center; /* Align items to the center vertically */
+            width: 100%;
+            margin-bottom: clamp(20px, 3vw, 40px); /* Responsive margin */
+            gap: clamp(20px, 3vw, 40px); /* Responsive gap */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+
+        /* Print Controls Column (Page 4) */
+        .print-controls-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center buttons within their column */
+            flex: 1; /* Allow it to take available space */
+            min-width: clamp(250px, 30vw, 280px); /* Responsive min-width */
+            gap: clamp(15px, 2vw, 20px); /* Responsive gap */
+        }
+
+        /* Tweak Section - Horizontal Layout (Page 4) */
+        .tweak-section {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: clamp(20px, 3vw, 30px);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            width: 100%; /* Fill container width */
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content within tweak section */
+        }
+
+        .tweak-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center content */
+            width: 100%;
+            margin-bottom: clamp(15px, 2vw, 20px);
+            gap: 20px; /* Gap between title and reset button */
+        }
+
+        .tweak-section h3 {
+            font-size: clamp(20px, 2.5vw, 24px);
+            font-weight: 700;
+            text-align: center;
+            color: white; /* White text as requested */
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+            margin-bottom: 0; /* Reset margin as parent flex handles spacing */
+        }
+
+        .tweak-controls-grid { /* Wrapper for horizontal controls */
+            display: flex;
+            flex-wrap: wrap; /* Allow controls to wrap */
+            justify-content: center; /* Center controls */
+            gap: clamp(15px, 2vw, 20px); /* Responsive gap */
+            width: 100%; /* Fill parent width */
+        }
+
+        .tweak-control {
+            display: flex;
+            flex-direction: column; /* Stack label, slider, value */
+            align-items: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: clamp(150px, 18vw, 200px); /* Responsive width for each control group */
+        }
+
+        .tweak-label {
+            font-size: clamp(16px, 1.8vw, 18px);
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 400;
+            flex: none;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 10px;
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        .tweak-buttons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .tweak-btn {
+            background: rgba(255, 255, 255, 0.1); /* Transparent/Glass */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Border for glass effect */
+            border-radius: 50%; /* Make them circular */
+            width: 40px; /* Fixed width for buttons */
+            height: 40px; /* Fixed height for buttons */
+            color: white;
+            font-size: 24px; /* Larger font for +/- */
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Softer shadow */
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+            backdrop-filter: blur(10px); /* Glass effect */
+            -webkit-backdrop-filter: blur(10px);
+            flex-shrink: 0; /* Prevent buttons from shrinking */
+        }
+
+        .tweak-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3); /* Softer hover shadow */
+            border-color: rgba(255, 255, 255, 0.5); /* Brighter border on hover */
+        }
+
+        .tweak-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            opacity: 0.9;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            border-radius: 50px; /* Rounded track */
+            margin: 0;
+        }
+
+        .tweak-slider:hover {
+            opacity: 1;
+        }
+
+        .tweak-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #8bba3a, #cf417b); /* Retain gradient for thumb */
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(139, 186, 58, 0.6);
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+
+        .tweak-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #8bba3a, #cf417b); /* Retain gradient for thumb */
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(139, 186, 58, 0.6);
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+
+        .tweak-value {
+            font-size: clamp(16px, 1.8vw, 18px);
+            font-weight: 600;
+            color: #F0F0F0;
+            width: 60px;
+            text-align: center;
+            margin-top: 10px;
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        /* General Buttons (Reset, Save, Print, New Pic, Retake, Continue, Go Back, Group Photo) - Transparent/Glass */
+        .reset-btn, .save-btn, .print-btn, .new-pic-btn, .go-back-btn, .group-photo-btn-page5 {
+            background: rgba(255, 255, 255, 0.1); /* Transparent/Glass */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Border for glass effect */
+            border-radius: 50px;
+            padding: 12px 28px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700; /* Bold weight */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2); /* Softer shadow */
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+            backdrop-filter: blur(15px); /* Glass effect */
+            -webkit-backdrop-filter: blur(15px);
+        }
+
+        .reset-btn::before, .save-btn::before, .print-btn::before, .new-pic-btn::before, .go-back-btn::before, .group-photo-btn-page5::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .reset-btn:hover::before, .save-btn:hover::before, .print-btn:hover::before, .new-pic-btn:hover::before, .go-back-btn::hover::before, .group-photo-btn-page5::hover::before {
+            left: 100%;
+        }
+
+        .reset-btn:hover, .save-btn:hover, .print-btn:hover, .new-pic-btn:hover, .go-back-btn:hover, .group-photo-btn-page5:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); /* Softer hover shadow */
+            border-color: rgba(255, 255, 255, 0.5); /* Brighter border on hover */
+        }
+
+        .reset-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 400; /* Regular weight for reset */
+        }
+        .save-btn {
+            margin: clamp(15px, 2vw, 20px) auto 0; /* Responsive margin */
+        }
+
+        /* Preset Buttons - Smaller, more subtle */
+        .preset-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 6px 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            font-weight: 700; /* Made bold for readability */
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin: 5px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        .preset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        .preset-btn + button {
+            margin-left: 5px;
+            background: transparent;
+            color: rgba(255,255,255,0.7);
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: none;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        .preset-btn + button:hover {
+            background: rgba(255,0,0,0.2);
+            color: white;
+            box-shadow: 0 3px 8px rgba(255,0,0,0.3);
+            transform: scale(1.1);
+        }
+
+        .print-btn {
+            font-size: clamp(1.8rem, 2.5vw, 2.2rem); /* Responsive font size */
+            padding: clamp(20px, 3vw, 25px) clamp(50px, 6vw, 70px); /* Responsive padding */
+            margin-bottom: clamp(15px, 2.5vw, 25px); /* Responsive margin */
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        .new-pic-container {
+            display: flex;
+            flex-direction: row; /* Align horizontally */
+            justify-content: flex-start; /* Align to the left */
+            align-items: center; /* Center vertically */
+            width: 100%;
+            margin-bottom: clamp(15px, 2.5vw, 20px); /* Responsive margin */
+            gap: 20px; /* Space between button and title */
+        }
+        .new-pic-container .new-pic-btn {
+            margin-left: 0; /* Remove default margin-left */
+            margin-bottom: 0; /* Remove default margin-bottom */
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+            white-space: nowrap; /* Prevent text overflow */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .post-timer-buttons {
+            display: flex;
+            gap: clamp(20px, 4vw, 40px); /* Responsive gap */
+            justify-content: center;
+            margin-top: clamp(20px, 3vw, 30px); /* Responsive margin */
+            flex-wrap: wrap;
+            width: 100%; /* Ensure full width for centering */
+        }
+
+        /* Circular Action Buttons (Retake, Continue, Go Back) */
+        .retake-btn, .continue-to-print-btn, .group-photo-btn-page5, .go-back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: clamp(120px, 15vw, 180px); /* Responsive width */
+            height: clamp(120px, 15vw, 180px); /* Responsive height */
+            color: #F0F0F0;
+            font-size: clamp(18px, 2.5vw, 22px);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column; /* Allow text to wrap if needed */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 15px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        .retake-btn:hover, .continue-to-print-btn:hover, .group-photo-btn-page5:hover, .go-back-btn:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(207, 65, 123, 0.4), 0 0 0 2px rgba(255,255,255,0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Group Print Section (no container) */
+        .group-print-controls {
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            align-items: center; /* Center horizontally */
+            gap: 10px; /* Space between elements */
+            margin-top: 15px; /* Space from print button above */
+            width: 100%; /* Ensure it takes full width */
+        }
+
+        .group-print-controls .label-and-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center; /* Center label and input */
+            width: 100%;
+        }
+
+        .group-print-controls label {
+            font-size: clamp(16px, 2vw, 20px);
+            font-weight: 600;
+            color: #F0F0F0;
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        .group-print-controls input {
+            width: clamp(50px, 8vw, 70px);
+            font-size: clamp(16px, 2vw, 20px);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            color: #F0F0F0;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        .group-print-controls #groupPrintBtn {
+            padding: 15px 35px; /* Slightly bigger padding */
+            font-size: clamp(1.6rem, 2.2vw, 2rem); /* Slightly bigger font size */
+            border-radius: 50px;
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        #groupPrintStatus {
+            margin-top: 15px;
+            font-size: clamp(16px, 1.8vw, 18px);
+            color: #dfa13c; /* Gold color for status */
+            font-weight: 500;
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        .instruction-text {
+            text-align: center;
+            font-size: clamp(16px, 2vw, 20px);
+            font-weight: 400; /* Regular weight */
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: clamp(10px, 1.5vw, 15px); /* Less space from buttons */
+            text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-family: 'Cascadia Mono', monospace; /* Apply Cascadia Mono */
+        }
+
+        /* Flash effect */
+        .flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            opacity: 0;
+            z-index: 9999;
+            pointer-events: none; /* Make sure it doesn't block clicks */
+            transition: opacity 0.1s ease-out;
+        }
+
+        .flash.active {
+            opacity: 0.8; /* A bit of opacity to not be blinding */
+            transition: opacity 0.05s ease-in;
+        }
+
+
+        /* Responsive Adjustments */
+        @media (max-width: 1400px) { /* Adjust for medium-large screens */
+            .container { padding: clamp(25px, 4vw, 50px); }
+            .header { margin-bottom: clamp(25px, 4vw, 50px); padding-bottom: clamp(10px, 1.5vw, 25px); }
+            .welcome-title { font-size: clamp(32px, 4vw, 56px); }
+            .live-preview-section { height: clamp(200px, 30vw, 400px); margin-bottom: clamp(25px, 3.5vw, 40px); }
+            .section-title { margin-bottom: clamp(15px, 2.5vw, 30px); }
+            .button-grid { gap: clamp(15px, 3vw, 30px); margin-bottom: clamp(15px, 2.5vw, 25px); }
+            .selection-button, .retake-btn, .continue-to-print-btn, .group-photo-btn-page5, .go-back-btn { width: clamp(100px, 13vw, 150px); height: clamp(100px, 13vw, 150px); font-size: clamp(16px, 2.2vw, 20px); }
+            .page3-content { margin-top: clamp(15px, 2.5vw, 25px); gap: clamp(15px, 2.5vw, 25px); }
+            .camera-section, .random-image-section { min-width: clamp(280px, 35vw, 350px); height: auto; } /* Removed fixed height, rely on aspect-ratio */
+            .timer-section { margin-bottom: clamp(15px, 2.5vw, 25px); padding: clamp(12px, 2vw, 20px); }
+            .timer-text { font-size: clamp(18px, 2.2vw, 22px); margin-right: 8px; }
+            .timer { font-size: clamp(42px, 5.5vw, 56px); }
+            .result-title { font-size: clamp(28px, 4vw, 38px); margin-bottom: clamp(15px, 2.5vw, 25px); }
+            .photo-and-print-controls-row { margin-bottom: clamp(15px, 2.5vw, 30px); gap: clamp(15px, 2.5vw, 30px); }
+            .photo-result { min-height: auto; padding: clamp(12px, 2vw, 18px); } /* Removed fixed height, rely on aspect-ratio */
+            .print-controls-column { min-width: clamp(220px, 28vw, 250px); gap: clamp(10px, 1.5vw, 15px); }
+            .print-btn { font-size: clamp(1.6rem, 2.2vw, 2rem); padding: clamp(18px, 2.5vw, 22px) clamp(40px, 5vw, 60px); margin-bottom: clamp(12px, 2vw, 20px); }
+            .group-print-controls { gap: 8px; margin-top: 12px; }
+            .group-print-controls label { font-size: clamp(14px, 1.8vw, 18px); }
+            .group-print-controls input { width: clamp(40px, 6vw, 60px); font-size: clamp(14px, 1.8vw, 18px); padding: 6px 10px; }
+            .group-print-controls #groupPrintBtn { padding: 10px 20px; font-size: 16px; }
+            #groupPrintStatus { font-size: clamp(14px, 1.6vw, 16px); margin-top: 12px; }
+            .tweak-section { padding: clamp(15px, 2.5vw, 25px); }
+            .tweak-section h3 { font-size: clamp(18px, 2.2vw, 22px); margin-bottom: 0; }
+            .tweak-controls-grid { gap: clamp(10px, 1.5vw, 15px); }
+            .tweak-control { width: clamp(130px, 16vw, 180px); padding: 10px; }
+            .tweak-label { font-size: clamp(14px, 1.6vw, 16px); margin-bottom: 8px; }
+            .tweak-buttons { gap: 6px; }
+            .tweak-btn { width: 32px; height: 32px; font-size: 20px; }
+            .tweak-slider { height: 8px; }
+            .tweak-slider::-webkit-slider-thumb, .tweak-slider::-moz-range-thumb { width: 16px; height: 16px; }
+            .tweak-value { font-size: clamp(14px, 1.6vw, 16px); width: 50px; margin-top: 8px; }
+            .reset-btn, .save-btn, .new-pic-container .new-pic-btn, .go-back-btn { font-size: clamp(14px, 1.8vw, 16px); padding: 10px 20px; }
+            .new-pic-container { gap: 15px; }
+            .save-btn { margin-top: clamp(12px, 1.8vw, 18px); }
+            .post-timer-buttons { gap: clamp(15px, 3vw, 30px); margin-top: clamp(15px, 2.5vw, 25px); }
+            .instruction-text { font-size: clamp(14px, 1.8vw, 18px); margin-top: clamp(10px, 1.5vw, 15px); }
+        }
+
+        @media (max-width: 768px) { /* Mobile adjustments */
+            body { padding: 10px; }
+            .container { padding: 20px; border-radius: 20px; min-height: auto; }
+            .header { grid-template-columns: 1fr; margin-bottom: 30px; padding-bottom: 15px; gap: 10px; } /* Stack header elements */
+            .header .logo-left, .header .camera-select-container, .header .group-photo-btn-header, .header .go-back-btn-header, .header .logo-right {
+                grid-column: 1 / -1; /* Make them full width */
+                justify-self: center; /* Center them */
+                margin-bottom: 5px;
+            }
+            .welcome-title { font-size: clamp(24px, 6vw, 36px); white-space: normal; } /* Allow wrap on very small screens */
+            .section-title { font-size: 22px; margin-bottom: 20px; }
+            .people-selection-container { flex-direction: column; text-align: center; }
+            .people-selection-container .section-title { text-align: center; margin-bottom: 20px; }
+            .live-preview-section { height: auto; margin-bottom: 20px; } /* Rely on aspect-ratio */
+            .selection-button, .retake-btn, .continue-to-print-btn, .group-photo-btn-page5, .go-back-btn { width: 110px; height: 110px; font-size: 16px; padding: 8px; }
+            .page3-content { gap: 15px; margin-top: 15px; }
+            .camera-section, .random-image-section { min-width: auto; width: 100%; height: auto; } /* Rely on aspect-ratio */
+            .timer-section { padding: 15px; margin-bottom: 15px; }
+            .timer-text { font-size: 18px; margin-right: 8px; }
+            .timer { font-size: 48px; }
+            .result-title { font-size: 28px; margin-bottom: 20px; }
+            .photo-and-print-controls-row { flex-direction: column; align-items: center; gap: 20px; margin-bottom: 20px; } /* Stack on mobiles */
+            .photo-result, .print-controls-column, .tweak-section { width: 100%; min-width: auto; }
+            .photo-result { min-height: auto; padding: 15px; } /* Rely on aspect-ratio */
+            .print-controls-column { min-width: auto; gap: 10px; }
+            .print-btn { font-size: 1.5rem; padding: 15px 35px; margin-bottom: 15px; }
+            .group-print-controls { gap: 8px; margin-top: 10px; }
+            .group-print-controls label { font-size: 15px; }
+            .group-print-controls input { width: 45px; padding: 6px 10px; }
+            .group-print-controls #groupPrintBtn { padding: 10px 20px; font-size: 16px; }
+            #groupPrintStatus { font-size: 15px; margin-top: 10px; }
+            .tweak-section { padding: 20px; }
+            .tweak-section h3 { font-size: 18px; margin-bottom: 0; }
+            .tweak-controls-grid { gap: 10px; }
+            .tweak-control { width: 140px; padding: 8px; }
+            .tweak-label { font-size: 14px; }
+            .tweak-buttons { gap: 5px; }
+            .tweak-btn { width: 32px; height: 32px; font-size: 16px; }
+            .tweak-slider { height: 8px; }
+            .tweak-slider::-webkit-slider-thumb, .tweak-slider::-moz-range-thumb { width: 16px; height: 16px; }
+            .tweak-value { font-size: 14px; width: 50px; }
+            .reset-btn, .save-btn, .new-pic-container .new-pic-btn, .go-back-btn { font-size: 12px; padding: 8px 15px; }
+            .new-pic-container { gap: 10px; }
+            .save-btn { margin-top: 10px; }
+            .post-timer-buttons { gap: 15px; margin-top: 15px; }
+            .instruction-text { font-size: 15px; margin-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header" id="mainHeader">
+            <div class="logo-left">
+                <img src="/static/logo1.png" alt="Bauhaus Logo" style="height: 70px; width: auto;">
+            </div>
+            <button class="go-back-btn-header" id="goBackBtnHeader">Back</button>
+            <div class="camera-select-container">
+                <select id="cameraSelect" class="camera-select">
+                    <option value="">Select Camera</option>
+                </select>
+            </div>
+            <button class="group-photo-btn-header" id="groupPhotoBtnHeader">Take a Group Photo</button>
+            <div class="logo-right">
+                <img src="/static/logo2.png" alt="Summaery Logo" style="height: 70px; width: auto;">
+            </div>
+        </div>
+
+        <div id="page1" class="page active">
+            <h1 class="welcome-title">Welcome to UrbanTogetherness Photobooth</h1>
+            <div class="live-preview-section" id="livePreviewSection">
+                <video id="liveVideo" autoplay playsinline style="display: none;"></video>
+                <div class="live-preview-placeholder" id="livePreviewPlaceholder">Select a camera to see live preview</div>
+            </div>
+            <div class="people-selection-container">
+                <h2 class="section-title">Choose the number of people you are</h2>
+                <div class="people-selection-buttons-group">
+                    <div class="button-grid">
+                        <button class="selection-button" data-type="people" data-value="single">Single</button>
+                        <button class="selection-button" data-type="people" data-value="couple">Couple</button>
+                        <button class="selection-button" data-type="people" data-value="group">Group<br>(3 or more)</button>
+                    </div>
+                    <div class="instruction-text">Press the buttons on the controller in front of you to select an option.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page2" class="page">
+            <h2 class="section-title" style="margin-bottom: 80px;">Choose the category of photo you want to recreate</h2>
+            <div class="button-grid" style="margin-bottom: 30px;">
+                <button class="selection-button" data-type="category" data-value="memes">Memes</button>
+                <button class="selection-button" data-type="category" data-value="poses">Poses</button>
+                <button class="selection-button" data-type="category" data-value="cringe">Cringe</button>
+            </div>
+            <div class="instruction-text" style="margin-top: 20px;">Press the buttons on the controller in front of you to select an option.</div>
+        </div>
+
+        <div id="page3" class="page">
+            <div class="timer-section" style="background: rgba(255,255,255,0.07); margin-bottom: 10px; margin-top: 0; padding: 12px 0;">
+                <div class="timer-text">You have <span class="timer" id="timer">10</span> seconds to recreate the following</div>
+            </div>
+            <div class="page3-content">
+                <div class="camera-section">
+                    <video id="video" autoplay playsinline style="display: none;"></video>
+                    <img id="previewImage" alt="Captured Preview" style="display: none;">
+                    <div class="camera-placeholder" id="cameraPlaceholder">Camera Preview</div>
+                </div>
+                <div class="random-image-section">
+                    <img id="randomImage" src="" alt="Pose to recreate" style="display: none;">
+                    <div class="random-image-placeholder" id="imagePlaceholder">Loading pose...</div>
+                </div>
+            </div>
+            <canvas id="canvas" style="display: none;"></canvas>
+            <div class="post-timer-buttons" id="postTimerButtons" style="display: none; gap: 40px;">
+                <button class="go-back-btn" id="goBackBtn">Go Back</button>
+                <button class="retake-btn" id="retakeBtn">Retake</button>
+                <button class="continue-to-print-btn" id="continueToPrintBtn">Continue to Print</button>
+            </div>
+            <div class="instruction-text" id="instructionTextPage3" style="display: none;">Press the buttons on the controller in front of you to select an option.</div>
+        </div>
+
+        <div id="page4" class="page">
+            <div class="new-pic-container">
+                <button class="new-pic-btn" id="newPicBtn" style="font-size: 18px; padding: 12px 32px; min-width: 240px; white-space: nowrap;">Take a New Pic</button>
+                <div class="result-title-container">
+                    <div class="result-title">Here's your amazing picture! 🎉</div>
+                </div>
+            </div>
+            <div class="photo-and-print-controls-row">
+                <div class="photo-result">
+                    <img id="capturedPhoto" alt="Your captured photo">
+                </div>
+                <div class="print-controls-column">
+                    <button class="print-btn" id="printBtn">Print Photo</button>
+                    <div class="group-print-controls">
+                        <div class="label-and-input">
+                            <label for="groupPrintCount">How many copies?</label>
+                            <input type="number" id="groupPrintCount" min="1" max="20" value="2">
+                        </div>
+                        <button class="print-btn" id="groupPrintBtn">Group Print</button>
+                    </div>
+                    <div id="groupPrintStatus"></div>
+                </div>
+            </div>
+            <div class="tweak-section">
+                <div class="tweak-section-header">
+                    <h3>Tweak Your Picture</h3>
+                    <button class="reset-btn" id="resetBtn">Reset to Default</button>
+                </div>
+                <div class="tweak-controls-grid">
+                    <div class="tweak-control">
+                        <span class="tweak-label">Brightness</span>
+                        <div class="tweak-buttons">
+                            <button class="tweak-btn" onclick="adjustValue('brightness', -5)">-</button>
+                            <input type="range" class="tweak-slider" id="brightnessSlider" min="0" max="200" value="100">
+                            <button class="tweak-btn" onclick="adjustValue('brightness', 5)">+</button>
+                        </div>
+                        <span class="tweak-value" id="brightnessValue">100</span>
+                    </div>
+                    <div class="tweak-control">
+                        <span class="tweak-label">Contrast</span>
+                        <div class="tweak-buttons">
+                            <button class="tweak-btn" onclick="adjustValue('contrast', -5)">-</button>
+                            <input type="range" class="tweak-slider" id="contrastSlider" min="0" max="200" value="100">
+                            <button class="tweak-btn" onclick="adjustValue('contrast', 5)">+</button>
+                        </div>
+                        <span class="tweak-value" id="contrastValue">100</span>
+                    </div>
+                    <div class="tweak-control">
+                        <span class="tweak-label">Shadows</span>
+                        <div class="tweak-buttons">
+                            <button class="tweak-btn" onclick="adjustValue('shadows', -5)">-</button>
+                            <input type="range" class="tweak-slider" id="shadowsSlider" min="0" max="200" value="100">
+                            <button class="tweak-btn" onclick="adjustValue('shadows', 5)">+</button>
+                        </div>
+                        <span class="tweak-value" id="shadowsValue">100</span>
+                    </div>
+                    <div class="tweak-control">
+                        <span class="tweak-label">Highlights</span>
+                        <div class="tweak-buttons">
+                            <button class="tweak-btn" onclick="adjustValue('highlights', -5)">-</button>
+                            <input type="range" class="tweak-slider" id="highlightsSlider" min="0" max="200" value="100">
+                            <button class="tweak-btn" onclick="adjustValue('highlights', 5)">+</button>
+                        </div>
+                        <span class="tweak-value" id="highlightsValue">100</span>
+                    </div>
+                </div>
+                <button class="save-btn" id="saveTweakBtn">Save Settings</button>
+                <div id="presetContainer" style="text-align: center; margin-top: 20px;"></div>
+            </div>
+        </div>
+
+        <div id="page5" class="page">
+            <div class="timer-section">
+                <div class="timer-text">You have <span class="timer" id="timer5">10</span> seconds to take your group photo</div>
+            </div>
+            <div class="page3-content">
+                <div class="live-preview-section" id="groupPhotoPreviewSection">
+                    <video id="video5" autoplay playsinline style="display: none;"></video>
+                    <img id="previewImage5" alt="Captured Preview" style="display: none;">
+                    <div class="camera-placeholder" id="cameraPlaceholder5">Camera Preview</div>
+                </div>
+            </div>
+            <canvas id="canvas5" style="display: none;"></canvas>
+            <div class="post-timer-buttons" id="postTimerButtons5" style="display: none;">
+                <button class="group-photo-btn-page5" id="retakeBtn5">Retake</button>
+                <button class="group-photo-btn-page5" id="printBtn5">Continue to Print</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="flash" id="flash"></div>
+
+    <script>
+        // Global variables
+        let selectedPeople = null;
+        let selectedCategory = null;
+        let video = null; // For page 3
+        let canvas = null; // For page 3
+        let context = null; // For page 3
+        let video5 = null; // For page 5
+        let canvas5 = null; // For page 5
+        let context5 = null; // For page 5
+        let stream = null; // Shared stream for all video elements
+        let capturedImageDataURL = null;
+        let selectedCameraId = null;
+        let originalImageDataURL = null;
+        let brightnessValue = 100;
+        let contrastValue = 100;
+        let shadowsValue = 100;
+        let highlightsValue = 100;
+        let websocket = null;
+        let currentPage = 'page1'; // Track current active page
+        let taskState = 'none'; // 'none', 'people_selected', 'category_selected', 'photo_captured', 'photo_result', 'group_photo_capture'
+        let savedPresets = [];
+        let currentRandomImage = null; // Stores the currently displayed random image on Page 3
+        const API_BASE_URL = 'http://127.0.0.1:8000'; // FastAPI server URL
+        let pageHistory = ['page1']; // To keep track of navigation for "Go Back"
+
+        // Function to show a specific page and hide others
+        function showPage(pageId) {
+            console.log(`[UI] Attempting to change page from ${currentPage} to ${pageId}`);
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                if (page.id === pageId) {
+                    page.classList.add('active');
+                } else {
+                    page.classList.remove('active');
+                }
+            });
+            
+            // Update history only if navigating to a new, distinct page
+            if (pageId !== currentPage) {
+                // If we're going back, pop from history
+                if (pageHistory.length > 1 && pageHistory[pageHistory.length - 2] === pageId) {
+                    pageHistory.pop();
+                    console.log(`[Navigation] Popped from history. New history: ${pageHistory.join(' -> ')}`);
+                } else {
+                    // Otherwise, push new page to history
+                    pageHistory.push(pageId);
+                    console.log(`[Navigation] Pushed to history. New history: ${pageHistory.join(' -> ')}`);
+                }
+            }
+            currentPage = pageId; // Update current page tracker
+            
+            // Manage header "Back" button visibility
+            const goBackBtnHeader = document.getElementById('goBackBtnHeader');
+            // Hide on Page 1 and Page 3 (since page 3 has its own back button)
+            if (pageId === 'page1' || pageId === 'page3') {
+                goBackBtnHeader.style.display = 'none'; 
+            } else {
+                goBackBtnHeader.style.display = 'block'; // Show on other pages
+            }
+
+            // Stop any active camera streams when changing pages, unless explicitly needed
+            // Only stop if moving away from a page that uses the stream
+            if (pageId !== 'page1' && pageId !== 'page3' && pageId !== 'page5' && stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+                console.log("[Camera] Stream stopped due to page change.");
+            }
+        }
+
+        // Fetch available images from server
+        async function fetchImages(peopleSelection, category) {
+            const url = `${API_BASE_URL}/find_images/?people=${peopleSelection}&category=${category}`;
+            console.log(`[fetchImages] Fetching image list from FastAPI: ${url}`);
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    console.error(`[fetchImages] Failed to fetch image list from FastAPI. Status: ${response.status} - ${response.statusText}`);
+                    const errorText = await response.text();
+                    console.error(`[fetchImages] Error details from FastAPI: ${errorText}`);
+                    return [];
+                }
+                const imageList = await response.json();
+                console.log(`[fetchImages] Received image list from FastAPI:`, imageList);
+                return imageList;
+            } catch (error) {
+                console.error('[fetchImages] Error fetching image list from FastAPI:', error);
+                return [];
+            }
+        }
+
+        // Get N random images based on category and people count
+        async function getRandomImages(peopleSelection, category, count = 1) {
+            console.log(`[getRandomImages] Requesting ${count} random images for people: ${peopleSelection}, category: ${category}`);
+            const images = await fetchImages(peopleSelection, category);
+            
+            if (!images || images.length === 0) {
+                console.error(`[getRandomImages] No images found matching selection: People='${peopleSelection}', Category='${category}'`);
+                return [];
+            }
+            
+            // Shuffle the array and take 'count' number of images
+            const shuffled = images.sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, count);
+
+            console.log(`[getRandomImages] Selected random image URLs for display:`, selected);
+            
+            return selected.map(url => ({
+                url: url,
+                alt: url.split('/').pop()
+            }));
+        }
+
+        // Populate camera list
+        async function populateCameraList() {
+            const cameraSelect = document.getElementById('cameraSelect');
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                cameraSelect.innerHTML = '<option value="">Select Camera</option>';
+                videoDevices.forEach(device => {
+                    const option = document.createElement('option');
+                    option.value = device.deviceId;
+                    option.textContent = device.label || `Camera ${videoDevices.indexOf(device) + 1}`;
+                    cameraSelect.appendChild(option);
+                });
+                cameraSelect.addEventListener('change', async function() {
+                    selectedCameraId = this.value;
+                    if (selectedCameraId) {
+                        // Re-initialize preview only if on a page with a live feed
+                        if(currentPage === 'page1') {
+                            await initializeLivePreview();
+                        } else if (currentPage === 'page3') {
+                            await initializeCamera(false);
+                        } else if (currentPage === 'page5') {
+                            await initializeCamera(true);
+                        }
+                    }
+                });
+            } catch (err) {
+                console.error('Camera list error:', err);
+                cameraSelect.innerHTML = '<option value="">No cameras found</option>';
+            }
+        }
+
+        // Initialize WebSocket
+        function initializeWebSocket() {
+            websocket = new WebSocket('ws://127.0.0.1:8000/ws');
+            websocket.onopen = () => console.log('WebSocket connected');
+            websocket.onmessage = (event) => {
+                const message = event.data;
+                console.log(`[WebSocket] Received message: "${message}" on currentPage: "${currentPage}" and taskState: "${taskState}"`);
+                handleWebSocketMessage(message);
+            };
+            websocket.onclose = () => console.log('WebSocket closed');
+            websocket.onerror = (error) => console.error('WebSocket error:', error);
+        }
+
+        function handleWebSocketMessage(message) {
+    if (message.startsWith("PEOPLE:")) {
+        const value = message.split(":")[1];
+        const button = document.querySelector(`[data-type="people"][data-value="${value}"]`);
+        if (button) {
+            button.classList.add('selected');
+            selectedPeople = value;
+            taskState = 'people_selected';
+            showPage('page2');
+        }
+    }
+    else if (message.startsWith("CATEGORY:")) {
+        const value = message.split(":")[1];
+        const button = document.querySelector(`[data-type="category"][data-value="${value}"]`);
+        if (button) {
+            button.classList.add('selected');
+            selectedCategory = value;
+            taskState = 'category_selected';
+            showPage('page3');
+            initializeCamera();
+        }
+    }
+    else if (["goBack", "retake", "continueToPrint"].includes(message)) {
+        if (document.getElementById('postTimerButtons').style.display === 'flex') {
+            if (message === 'goBack') {
+                document.getElementById('goBackBtn').click();
+            } else if (message === 'retake') {
+                document.getElementById('retakeBtn').click();
+            } else if (message === 'continueToPrint') {
+                document.getElementById('continueToPrintBtn').click();
+            }
+        }
+    }
+}
+
+
+        // Initialize live preview (for Page 1)
+        async function initializeLivePreview() {
+            const liveVideo = document.getElementById('liveVideo');
+            const livePlaceholder = document.getElementById('livePreviewPlaceholder');
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            try {
+                const constraints = {
+                    video: {
+                        width: { ideal: 1920 }, // Increased resolution for better quality
+                        height: { ideal: 1080 },
+                        deviceId: selectedCameraId ? { exact: selectedCameraId } : undefined
+                    },
+                    audio: false
+                };
+                stream = await navigator.mediaDevices.getUserMedia(constraints);
+                liveVideo.srcObject = stream;
+                liveVideo.style.display = 'block';
+                livePlaceholder.style.display = 'none';
+                console.log("[Camera] Live preview initialized.");
+
+                // Adjust live preview section padding based on video aspect ratio
+                liveVideo.addEventListener('loadedmetadata', () => {
+                    const videoAspectRatio = liveVideo.videoWidth / liveVideo.videoHeight;
+                    const containerWidth = liveVideo.parentElement.clientWidth;
+                    const calculatedHeight = containerWidth / videoAspectRatio;
+                    liveVideo.parentElement.style.height = `${calculatedHeight}px`;
+                    console.log(`[Live Preview] Adjusted container height to ${calculatedHeight}px for aspect ratio ${videoAspectRatio}`);
+                }, { once: true });
+
+            } catch (err) {
+                console.error('[Camera] Live preview camera access failed:', err);
+                liveVideo.style.display = 'none';
+                livePlaceholder.style.display = 'block';
+                livePlaceholder.innerHTML = 'Camera unavailable. Please check permissions.';
+            }
+        }
+
+        // Initialize camera for Page 3 (camera capture with pose) or Page 5 (group photo)
+        async function initializeCamera(forPage5 = false) {
+            const pageId = forPage5 ? 'page5' : 'page3';
+            const currentVideo = document.getElementById(forPage5 ? 'video5' : 'video');
+            const currentCanvas = document.getElementById(forPage5 ? 'canvas5' : 'canvas');
+            const currentTimerElement = document.getElementById(forPage5 ? 'timer5' : 'timer');
+            const currentPreviewImage = document.getElementById(forPage5 ? 'previewImage5' : 'previewImage');
+            const currentPlaceholder = document.getElementById(forPage5 ? 'cameraPlaceholder5' : 'cameraPlaceholder');
+            const postTimerButtons = document.getElementById(forPage5 ? 'postTimerButtons5' : 'postTimerButtons');
+            const currentInstructionText = document.getElementById('instructionTextPage3'); // Only page 3 has this now
+
+            // Reset UI elements
+            currentTimerElement.textContent = '10';
+            currentVideo.style.display = 'block';
+            currentPreviewImage.style.display = 'none';
+            currentPlaceholder.style.display = 'none';
+            postTimerButtons.style.display = 'none';
+            if (!forPage5 && currentInstructionText) {
+                currentInstructionText.style.display = 'none';
+            }
+            
+            // Handle random image for Page 3 only
+            if (!forPage5) {
+                const randomImageElement = document.getElementById('randomImage');
+                const imagePlaceholderElement = document.getElementById('imagePlaceholder');
+                imagePlaceholderElement.style.display = 'block';
+                imagePlaceholderElement.textContent = 'Loading pose...';
+                randomImageElement.style.display = 'none';
+                
+                if (taskState === 'category_selected' || currentRandomImage === null) { 
+                    console.log("[Camera] Fetching new random image for pose.");
+                    const images = await getRandomImages(selectedPeople, selectedCategory, 1);
+                    currentRandomImage = (images && images.length > 0) ? images[0] : null;
+                }
+
+                if (currentRandomImage) {
+                    randomImageElement.src = currentRandomImage.url;
+                    randomImageElement.alt = currentRandomImage.alt;
+                    randomImageElement.onload = () => {
+                        randomImageElement.style.display = 'block';
+                        imagePlaceholderElement.style.display = 'none';
+                        console.log(`[Camera] Pose image loaded: ${currentRandomImage.url}`);
+                    };
+                    randomImageElement.onerror = (e) => {
+                        console.error('[Camera] Error loading random image for page 3:', e);
+                        imagePlaceholderElement.textContent = 'Error loading pose.';
+                    };
+                } else {
+                    imagePlaceholderElement.textContent = 'No pose found.';
+                    randomImageElement.style.display = 'none';
+                    console.warn("[Camera] No random pose image available.");
+                }
+            }
+
+            // Reuse or get a new camera stream
+            if (!stream || !stream.active) {
+                try {
+                    console.log("[Camera] No active stream. Requesting new one.");
+                    const constraints = {
+                        video: {
+                            width: { ideal: 1920 },
+                            height: { ideal: 1080 },
+                            deviceId: selectedCameraId ? { exact: selectedCameraId } : undefined
+                        },
+                        audio: false
+                    };
+                    stream = await navigator.mediaDevices.getUserMedia(constraints);
+                } catch (err) {
+                    console.error(`[Camera] Access failed on page ${pageId}:`, err);
+                    currentPlaceholder.innerHTML = 'Camera unavailable. Please check permissions.';
+                    currentPlaceholder.style.display = 'block';
+                    currentVideo.style.display = 'none';
+                    return;
+                }
+            }
+            
+            currentVideo.srcObject = stream;
+            console.log(`[Camera] Stream assigned to video element on page ${pageId}.`);
+
+            currentVideo.onloadedmetadata = () => {
+                currentCanvas.width = currentVideo.videoWidth;
+                currentCanvas.height = currentVideo.videoHeight;
+                currentPlaceholder.style.display = 'none';
+                currentVideo.style.display = 'block';
+                console.log(`[Camera] Metadata loaded for page ${pageId}. Starting countdown.`);
+                startCountdown(forPage5);
+            };
+            // If already loaded, trigger manually
+            if (currentVideo.readyState >= currentVideo.HAVE_METADATA) {
+                 currentVideo.onloadedmetadata();
+            }
+        }
+
+        // Start countdown (reusable for page 3 and page 5)
+        function startCountdown(forPage5 = false) {
+            const currentTimerElement = forPage5 ? document.getElementById('timer5') : document.getElementById('timer');
+            const postTimerButtons = forPage5 ? document.getElementById('postTimerButtons5') : document.getElementById('postTimerButtons');
+            const currentInstructionText = document.getElementById('instructionTextPage3');
+            let timeLeft = 10;
+            currentTimerElement.textContent = timeLeft;
+
+            postTimerButtons.style.display = 'none';
+            if(!forPage5) currentInstructionText.style.display = 'none';
+            console.log(`[Countdown] Starting countdown for Page ${forPage5 ? '5' : '3'}...`);
+
+            const countdownInterval = setInterval(() => {
+                if ((!forPage5 && currentPage !== 'page3') || (forPage5 && currentPage !== 'page5')) {
+                    console.log("[Countdown] Countdown interrupted due to page change.");
+                    clearInterval(countdownInterval);
+                    return;
+                }
+                timeLeft--;
+                currentTimerElement.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    console.log("[Countdown] Timer ended. Capturing photo.");
+                    capturePhoto(forPage5);
+                    postTimerButtons.style.display = 'flex';
+                    if (!forPage5) {
+                        currentInstructionText.style.display = 'block';
+                    }
+                    taskState = forPage5 ? 'group_photo_captured' : 'photo_captured';
+                }
+            }, 1000);
+        }
+
+        // Capture photo (reusable for page 3 and page 5)
+        async function capturePhoto(forPage5 = false) {
+            const currentVideo = forPage5 ? document.getElementById('video5') : document.getElementById('video');
+            const currentCanvas = forPage5 ? document.getElementById('canvas5') : document.getElementById('canvas');
+            const currentContext = currentCanvas.getContext('2d');
+            const currentPreviewImage = forPage5 ? document.getElementById('previewImage5') : document.getElementById('previewImage');
+            const currentPlaceholder = forPage5 ? document.getElementById('cameraPlaceholder5') : document.getElementById('cameraPlaceholder');
+
+            // Trigger flash effect
+            const flash = document.getElementById('flash');
+            flash.classList.add('active');
+            setTimeout(() => {
+                flash.classList.remove('active');
+            }, 150);
+
+            if (currentVideo && stream && stream.active) {
+                currentCanvas.width = currentVideo.videoWidth;
+                currentCanvas.height = currentVideo.videoHeight;
+                currentContext.drawImage(currentVideo, 0, 0, currentCanvas.width, currentCanvas.height);
+                
+                capturedImageDataURL = currentCanvas.toDataURL('image/jpeg', 0.9); // Use JPEG for smaller size
+                
+                currentVideo.style.display = 'none';
+                currentPreviewImage.src = capturedImageDataURL;
+                currentPreviewImage.style.display = 'block';
+                console.log("[Capture] Photo captured and preview displayed.");
+            } else {
+                console.error('[Capture] No camera available to capture photo or stream not active.');
+                currentPlaceholder.style.display = 'block';
+                currentPlaceholder.innerHTML = 'No camera available';
+            }
+        }
+
+        // Update image adjustments
+        function updateImageAdjustments() {
+            const capturedPhotoElement = document.getElementById('capturedPhoto');
+            if (!capturedPhotoElement) return;
+
+            // Use CSS filters for real-time, non-destructive editing
+            const filterString = `brightness(${brightnessValue}%) contrast(${contrastValue}%)`;
+            // Note: Shadows and Highlights are more complex and best handled with canvas if pixel-level control is needed,
+            // but for simplicity and performance, we'll stick to what CSS filters can do.
+            // A drop-shadow filter can simulate shadow adjustments to some extent.
+            capturedPhotoElement.style.filter = filterString;
+            console.log(`[Adjustments] Applied CSS filters: ${filterString}`);
+        }
+        
+        // --- Tweak Presets: Save to localStorage and add Remove button ---
+        function savePresetsToStorage() {
+            localStorage.setItem('photoBoothPresets', JSON.stringify(savedPresets));
+            console.log("[Presets] Presets saved to local storage.");
+        }
+        function loadPresetsFromStorage() {
+            const data = localStorage.getItem('photoBoothPresets');
+            if (data) {
+                try {
+                    savedPresets = JSON.parse(data);
+                    console.log("[Presets] Presets loaded from local storage.");
+                } catch (e) {
+                    savedPresets = [];
+                    console.error("[Presets] Error parsing saved presets from localStorage:", e);
+                }
+            } else {
+                savedPresets = [];
+                console.log("[Presets] No presets found in local storage.");
+            }
+        }
+        // Update preset buttons with remove option
+        function updatePresetButtons() {
+            const presetContainer = document.getElementById('presetContainer');
+            presetContainer.innerHTML = '';
+            savedPresets.forEach((preset, index) => {
+                const wrapper = document.createElement('span');
+                wrapper.style.display = 'inline-flex';
+                wrapper.style.alignItems = 'center';
+                const button = document.createElement('button');
+                button.className = 'preset-btn';
+                button.textContent = `${preset.brightness}B, ${preset.contrast}C, ${preset.shadows}S, ${preset.highlights}H`;
+                button.addEventListener('click', () => {
+                    brightnessValue = preset.brightness;
+                    contrastValue = preset.contrast;
+                    shadowsValue = preset.shadows;
+                    highlightsValue = preset.highlights;
+                    document.getElementById('brightnessSlider').value = brightnessValue;
+                    document.getElementById('contrastSlider').value = contrastValue;
+                    document.getElementById('shadowsSlider').value = shadowsValue;
+                    document.getElementById('highlightsSlider').value = highlightsValue;
+                    document.getElementById('brightnessValue').textContent = brightnessValue;
+                    document.getElementById('contrastValue').textContent = contrastValue;
+                    document.getElementById('shadowsValue').textContent = shadowsValue;
+                    document.getElementById('highlightsValue').textContent = highlightsValue;
+                    updateImageAdjustments();
+                    console.log(`[Presets] Applied preset ${index}.`);
+                });
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = '✕';
+                removeBtn.title = 'Remove';
+                removeBtn.style.marginLeft = '6px';
+                removeBtn.style.background = 'transparent';
+                removeBtn.style.border = 'none';
+                removeBtn.style.borderRadius = '50%';
+                removeBtn.style.cursor = 'pointer';
+                removeBtn.style.width = '24px';
+                removeBtn.style.height = '24px';
+                removeBtn.style.color = 'rgba(255,255,255,0.7)';
+                removeBtn.style.transition = 'all 0.2s ease';
+                removeBtn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    savedPresets.splice(index, 1);
+                    savePresetsToStorage();
+                    updatePresetButtons();
+                    console.log(`[Presets] Removed preset ${index}.`);
+                });
+                removeBtn.addEventListener('mouseenter', () => {
+                    removeBtn.style.background = 'rgba(255,0,0,0.2)';
+                    removeBtn.style.color = 'white';
+                });
+                removeBtn.addEventListener('mouseleave', () => {
+                    removeBtn.style.background = 'transparent';
+                    removeBtn.style.color = 'rgba(255,255,255,0.7)';
+                });
+                wrapper.appendChild(button);
+                wrapper.appendChild(removeBtn);
+                presetContainer.appendChild(wrapper);
+            });
+        }
+        // On save, persist to storage
+        function saveTweakPreset() {
+            const preset = {
+                brightness: brightnessValue,
+                contrast: contrastValue,
+                shadows: shadowsValue,
+                highlights: highlightsValue
+            };
+            savedPresets.push(preset);
+            savePresetsToStorage();
+            updatePresetButtons();
+            console.log("[Presets] Current settings saved as a new preset.");
+        }
+        // On load, restore presets
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPresetsFromStorage();
+            updatePresetButtons();
+        });
+
+        // DOM content loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectionButtons = document.querySelectorAll('.selection-button');
+            const printBtn = document.getElementById('printBtn');
+            const newPicBtn = document.getElementById('newPicBtn');
+            const groupPrintBtn = document.getElementById('groupPrintBtn');
+            const brightnessSlider = document.getElementById('brightnessSlider');
+            const contrastSlider = document.getElementById('contrastSlider');
+            const shadowsSlider = document.getElementById('shadowsSlider');
+            const highlightsSlider = document.getElementById('highlightsSlider');
+            const brightnessValueElement = document.getElementById('brightnessValue');
+            const contrastValueElement = document.getElementById('contrastValue');
+            const shadowsValueElement = document.getElementById('shadowsValue');
+            const highlightsValueElement = document.getElementById('highlightsValue');
+            const resetBtn = document.getElementById('resetBtn');
+            const retakeBtn = document.getElementById('retakeBtn');
+            const continueToPrintBtn = document.getElementById('continueToPrintBtn');
+            const goBackBtn = document.getElementById('goBackBtn'); // Circular Go Back on Page 3
+            const saveTweakBtn = document.getElementById('saveTweakBtn');
+            const postTimerButtons = document.getElementById('postTimerButtons');
+            const groupPhotoBtnHeader = document.getElementById('groupPhotoBtnHeader'); // Header Group Photo Button
+            const goBackBtnHeader = document.getElementById('goBackBtnHeader'); // Header Go Back Button
+            const retakeBtn5 = document.getElementById('retakeBtn5'); // Page 5 Retake
+            const printBtn5 = document.getElementById('printBtn5'); // Page 5 Print
+
+
+            populateCameraList();
+            initializeWebSocket();
+
+            // Initially show page 1
+            showPage('page1');
+
+            // Selection button handlers (for on-screen clicks)
+            selectionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const type = this.dataset.type;
+                    const value = this.dataset.value;
+
+                    document.querySelectorAll(`[data-type="${type}"]`).forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+
+                    if (type === 'people') {
+                        selectedPeople = value;
+                        taskState = 'people_selected';
+                        showPage('page2');
+                        console.log(`[UI Click] Selected people: ${selectedPeople}`);
+                    } else if (type === 'category') {
+                        selectedCategory = value;
+                        taskState = 'category_selected';
+                        showPage('page3');
+                        initializeCamera(false); // For Page 3 flow
+                        console.log(`[UI Click] Selected category: ${selectedCategory}`);
+                    }
+                });
+            });
+
+            // Header Group Photo Button handler
+            groupPhotoBtnHeader.addEventListener('click', function() {
+                console.log("[UI Click] Header Group Photo button clicked. Transitioning to Page 5.");
+                showPage('page5');
+                taskState = 'group_photo_capture';
+                initializeCamera(true); // For Page 5 flow
+            });
+            
+            // Go Back button functionality (Header and Page 3 circular button)
+            const goBackLogic = function() {
+                 console.log("[GoBack] Go Back button clicked.");
+                if (pageHistory.length > 1) {
+                    const previousPageId = pageHistory[pageHistory.length - 2];
+                    showPage(previousPageId); // This also handles popping from history
+                    // Handle specific state resets based on the page we're returning to
+                    if (previousPageId === 'page1') {
+                        taskState = 'none';
+                        selectedPeople = null;
+                        selectedCategory = null;
+                        document.querySelectorAll('.selection-button').forEach(btn => btn.classList.remove('selected'));
+                        if (stream) { stream.getTracks().forEach(track => track.stop()); stream = null; }
+                        if (selectedCameraId) { initializeLivePreview(); }
+                    } else if (previousPageId === 'page2') {
+                        taskState = 'people_selected';
+                        selectedCategory = null;
+                        document.querySelectorAll('[data-type="category"]').forEach(btn => btn.classList.remove('selected'));
+                        if (stream) { stream.getTracks().forEach(track => track.stop()); stream = null; }
+                    }
+                } else {
+                    console.log("[GoBack] Already on the first page, cannot go back further.");
+                }
+            }
+
+            // Assign logic to both back buttons
+            goBackBtnHeader.addEventListener('click', goBackLogic);
+            goBackBtn.addEventListener('click', goBackLogic);
+
+
+            // Print button (Page 4)
+            printBtn.addEventListener('click', printPhoto);
+
+            // New picture button (Page 4)
+            newPicBtn.addEventListener('click', function() {
+                console.log("[NewPic] Initiated new picture sequence.");
+                showPage('page1');
+                taskState = 'none';
+                selectedPeople = null;
+                selectedCategory = null;
+                currentRandomImage = null; // Reset the random image on new pic
+                pageHistory = ['page1']; // Reset history
+                document.querySelectorAll('.selection-button').forEach(btn => btn.classList.remove('selected'));
+                document.getElementById('capturedPhoto').src = '';
+                document.getElementById('capturedPhoto').style.filter = 'none'; // Reset filters
+                
+                // Reset sliders and values to default
+                resetBtn.click(); 
+
+                // Stop any camera stream and re-initialize live preview for page 1
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    stream = null;
+                }
+                if (selectedCameraId) {
+                    initializeLivePreview();
+                }
+            });
+
+            // Group print button (Page 4)
+            if (groupPrintBtn) {
+                groupPrintBtn.addEventListener('click', groupPrint);
+            }
+
+            // Reset button (Page 4)
+            resetBtn.addEventListener('click', function() {
+                console.log("[Adjustments] Resetting adjustments to default.");
+                brightnessValue = 100;
+                contrastValue = 100;
+                shadowsValue = 100;
+                highlightsValue = 100;
+                brightnessSlider.value = 100;
+                contrastSlider.value = 100;
+                shadowsSlider.value = 100;
+                highlightsSlider.value = 100;
+                brightnessValueElement.textContent = 100;
+                contrastValueElement.textContent = 100;
+                shadowsValueElement.textContent = 100;
+                highlightsValueElement.textContent = 100;
+                updateImageAdjustments();
+            });
+
+            // Save tweak button (Page 4)
+            saveTweakBtn.addEventListener('click', saveTweakPreset);
+
+            // Slider input handlers (Page 4)
+            [brightnessSlider, contrastSlider, shadowsSlider, highlightsSlider].forEach(slider => {
+                slider.addEventListener('input', function() {
+                    updateValue(this.id.replace('Slider', ''), this.value);
+                });
+            });
+
+            // Adjust value function (Page 4)
+            window.adjustValue = function(type, delta) {
+                const currentSlider = document.getElementById(`${type}Slider`);
+                let currentValue = parseInt(currentSlider.value);
+                currentValue = Math.max(parseInt(currentSlider.min), Math.min(parseInt(currentSlider.max), currentValue + delta));
+                currentSlider.value = currentValue;
+                updateValue(type, currentValue);
+            };
+
+            // Update value function (Page 4)
+            window.updateValue = function(type, value) {
+                const val = parseInt(value);
+                const valueElement = document.getElementById(`${type}Value`);
+                if (type === 'brightness') brightnessValue = val;
+                else if (type === 'contrast') contrastValue = val;
+                else if (type === 'shadows') shadowsValue = val;
+                else if (type === 'highlights') highlightsValue = val;
+                
+                if(valueElement) valueElement.textContent = val;
+                updateImageAdjustments();
+            };
+
+            // Retake button (Page 3)
+retakeBtn.addEventListener('click', function() {
+                console.log("[Retake] Initiated retake action for Page 3.");
+                postTimerButtons.style.display = 'none';
+                instructionTextPage3.style.display = 'none';
+                document.getElementById('timer').textContent = '10';
+                document.getElementById('previewImage').style.display = 'none';
+                
+                const randomImageElement = document.getElementById('randomImage');
+                const imagePlaceholderElement = document.getElementById('imagePlaceholder');
+                if (currentRandomImage) {
+                    randomImageElement.src = currentRandomImage.url;
+                    randomImageElement.alt = currentRandomImage.alt;
+                    randomImageElement.style.display = 'block';
+                    imagePlaceholderElement.style.display = 'none';
+                    console.log(`[Retake] Re-displaying same pose: ${currentRandomImage.url}`);
+                } else {
+                    imagePlaceholderElement.textContent = 'No pose found.';
+                    randomImageElement.style.display = 'none';
+                    console.warn("[Retake] No pose image available for retake.");
+                }
+                
+                const videoElement = document.getElementById('video');
+                videoElement.srcObject = null;
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    stream = null;
+                }
+                initializeCamera(false); // Re-initialize camera and restart countdown for Page 3
+                taskState = 'category_selected';
+            });
+
+            // Continue to print button (Page 3)
+            continueToPrintBtn.addEventListener('click', function() {
+                console.log("[ContinueToPrint] Initiated continue to print action.");
+                if (capturedImageDataURL) {
+                    showPage('page4');
+                    taskState = 'photo_result';
+                    const capturedPhotoEl = document.getElementById('capturedPhoto');
+                    capturedPhotoEl.src = capturedImageDataURL;
+                    originalImageDataURL = capturedImageDataURL; // Keep a copy of the original
+                    resetBtn.click(); // Reset tweaks for the new photo
+                } else {
+                    console.error('[ContinueToPrint] No photo captured to print!');
+                }
+            });
+
+            // Retake button (Page 5)
+            retakeBtn5.addEventListener('click', function() {
+                console.log("[Retake] Initiated retake action for Page 5.");
+                taskState = 'group_photo_capture';
+                // Re-initialize camera which also restarts countdown
+                initializeCamera(true);
+            });
+
+            // Print button (Page 5) - now acts as "Continue to Print"
+            printBtn5.addEventListener('click', function() {
+                console.log("[Print] Initiated continue to print action from Page 5.");
+                if (capturedImageDataURL) {
+                    showPage('page4'); // Navigate to Page 4
+                    taskState = 'photo_result';
+                    const capturedPhotoEl = document.getElementById('capturedPhoto');
+                    capturedPhotoEl.src = capturedImageDataURL;
+                    originalImageDataURL = capturedImageDataURL;
+                    resetBtn.click(); // Reset tweaks for the new photo
+                } else {
+                    console.error('[Print] No photo captured to print from Page 5!');
+                }
+            });
+
+
+            // Print photo function (reusable for Page 4)
+            async function printPhoto() {
+                const capturedPhotoElement = document.getElementById('capturedPhoto');
+                if (!capturedPhotoElement.src || capturedPhotoElement.src.startsWith('http')) {
+                    console.error('[Print] No photo to print!');
+                    document.getElementById('groupPrintStatus').textContent = 'No photo to print!';
+                    document.getElementById('groupPrintStatus').style.color = 'red';
+                    return;
+                }
+                
+                const printButton = document.getElementById('printBtn');
+                const groupPrintButton = document.getElementById('groupPrintBtn');
+                const countInput = document.getElementById('groupPrintCount');
+                
+                printButton.disabled = true;
+                groupPrintButton.disabled = true;
+                countInput.disabled = true;
+
+                printButton.textContent = 'Printing...';
+                console.log("[Print] Single print initiated.");
+
+                // Create a canvas to apply filters before sending
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.onload = async () => {
+                    canvas.width = img.naturalWidth;
+                    canvas.height = img.naturalHeight;
+                    ctx.filter = capturedPhotoElement.style.filter;
+                    ctx.drawImage(img, 0, 0);
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg'));
+
+                    const formData = new FormData();
+                    formData.append('image', blob, 'capture.jpg');
+                    formData.append('text', new Date().toLocaleString()); 
+
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/process-image`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error('[Print] Error printing image: ' + errorText);
+                            document.getElementById('groupPrintStatus').textContent = `Print Error: ${errorText}`;
+                            document.getElementById('groupPrintStatus').style.color = 'red';
+                        } else {
+                            console.log("[Print] Image sent to backend for printing successfully.");
+                            document.getElementById('groupPrintStatus').textContent = `Print successful!`;
+                            document.getElementById('groupPrintStatus').style.color = '#8bba3a'; /* Green */
+                        }
+                    } catch (err) {
+                        console.error('[Print] Error sending to backend: ' + err.message);
+                        document.getElementById('groupPrintStatus').textContent = `Network Error: ${err.message}`;
+                        document.getElementById('groupPrintStatus').style.color = 'red';
+                    } finally {
+                        printButton.disabled = false;
+                        groupPrintButton.disabled = false;
+                        countInput.disabled = false;
+                        printButton.textContent = 'Print Photo';
+                        setTimeout(() => { document.getElementById('groupPrintStatus').textContent = ''; }, 5000);
+                    }
+                };
+                img.src = originalImageDataURL; // Use original, unfiltered image
+            }
+
+            // Group print function (reusable for Page 4)
+            async function groupPrint() {
+                const countInput = document.getElementById('groupPrintCount');
+                const statusDiv = document.getElementById('groupPrintStatus');
+                const groupPrintButton = document.getElementById('groupPrintBtn');
+                const singlePrintButton = document.getElementById('printBtn'); 
+                const capturedPhotoElement = document.getElementById('capturedPhoto');
+                
+                let copies = parseInt(countInput.value) || 1;
+                if (!capturedPhotoElement.src || capturedPhotoElement.src.startsWith('http')) {
+                    console.error('[Group Print] No photo to print!');
+                    statusDiv.textContent = 'No photo to print!';
+                    statusDiv.style.color = 'red';
+                    return;
+                }
+                if (copies < 1) copies = 1;
+                if (copies > 20) copies = 20; // Limit to 20 copies
+                
+                groupPrintButton.disabled = true;
+                singlePrintButton.disabled = true;
+                countInput.disabled = true;
+                
+                statusDiv.textContent = `Starting group print: ${copies} copies...`;
+                statusDiv.style.color = '#dfa13c'; /* Gold */
+                console.log(`[Group Print] Initiated group print for ${copies} copies.`);
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+
+                img.onload = async () => {
+                    canvas.width = img.naturalWidth;
+                    canvas.height = img.naturalHeight;
+                    ctx.filter = capturedPhotoElement.style.filter;
+                    ctx.drawImage(img, 0, 0);
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg'));
+                    
+                    let printed = 0;
+                    async function printOne() {
+                        statusDiv.textContent = `Printing copy ${printed + 1} of ${copies}...`;
+                        const formData = new FormData();
+                        formData.append('image', blob, 'capture.jpg');
+                        formData.append('text', new Date().toLocaleString());
+
+                        try {
+                            const response = await fetch(`${API_BASE_URL}/process-image`, {
+                                method: 'POST',
+                                body: formData
+                            });
+                            if (!response.ok) throw new Error(await response.text());
+                            console.log(`[Group Print] Sent copy ${printed + 1} to backend for printing successfully.`);
+                            
+                            printed++;
+                            if (printed < copies) {
+                                setTimeout(printOne, 1000); 
+                            } else {
+                                statusDiv.textContent = `All ${copies} copies printed!`;
+                                statusDiv.style.color = '#8bba3a'; /* Green */
+                                groupPrintButton.disabled = false;
+                                singlePrintButton.disabled = false;
+                                countInput.disabled = false;
+                                setTimeout(() => { statusDiv.textContent = ''; }, 5000);
+                            }
+                        } catch (err) {
+                            statusDiv.textContent = `Error printing copy ${printed + 1}: ${err.message}`;
+                            statusDiv.style.color = 'red';
+                            console.error(`[Group Print] Error sending copy ${printed + 1}:`, err);
+                            groupPrintButton.disabled = false;
+                            singlePrintButton.disabled = false;
+                            countInput.disabled = false;
+                        }
+                    }
+                    printOne(); // Start the first print
+                };
+                img.src = originalImageDataURL;
+            }
+        });
+    </script>
+</body>
+</html>

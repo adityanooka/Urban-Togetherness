@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Webcam Snapshot with API Processing</title>
+  <style>
+    body { font-family: sans-serif; background: #f9f9f9; margin: 2em; }
+    h1 { color: #333; text-align: center; }
+    #app { max-width: 600px; margin: auto; background: white; padding: 1em; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    video, canvas, img { display: block; margin: 1em auto; max-width: 100%; }
+    #countdown { text-align: center; font-size: 1.5em; color: red; }
+    a.button { display: block; margin: 1em auto; padding: 0.5em 1em; text-align: center; text-decoration: none; background: #4CAF50; color: white; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Webcam Snapshot</h1>
+    <video id="video" autoplay></video>
+    <div id="countdown"></div>
+    <canvas id="canvas"></canvas>
+    <a id="downloadBtn" class="button" style="display:none;" download="snapshot.png">Download Image</a>
+
+    <h2>Processed Image</h2>
+    <img id="processedImage" alt="Processed Image" style="display:none;"/>
+    <a id="processedDownload" class="button" style="display:none;" download="processed.png">Download Processed Image</a>
+
+    <p style="text-align: center;">Press <strong>Space</strong> to start 10-second timer for picture</p>
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const countdown = document.getElementById('countdown');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const processedImage = document.getElementById('processedImage');
+    const processedDownload = document.getElementById('processedDownload');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        console.error("Error accessing webcam: ", err);
+      });
+
+    function takePicture() {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      countdown.textContent = '';
+
+      const imageData = canvas.toDataURL("image/png");
+      downloadBtn.href = imageData;
+      downloadBtn.style.display = "inline-block";
+
+      // Convert dataURL to Blob and send to API
+      canvas.toBlob(blob => {
+        const formData = new FormData();
+        formData.append("image", blob, "snapshot.png");
+        formData.append("text", "hello world");
+
+        fetch("http://127.0.0.1:8000/process-image", {
+          method: "POST",
+          body: formData
+        })
+        .then(response => response.blob())
+        .then(blob => {
+          const url = URL.createObjectURL(blob);
+          processedImage.src = url;
+          processedImage.style.display = "block";
+          processedDownload.href = url;
+          processedDownload.style.display = "inline-block";
+        })
+        .catch(error => {
+          console.error("Image processing error:", error);
+        });
+      }, "image/png");
+    }
+
+    function startCountdown() {
+      let timeLeft = 10;
+      countdown.textContent = timeLeft;
+      downloadBtn.style.display = "none";
+      processedImage.style.display = "none";
+      processedDownload.style.display = "none";
+
+      const interval = setInterval(() => {
+        timeLeft--;
+        countdown.textContent = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          takePicture();
+        }
+      }, 1000);
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.code === 'Space') {
+        startCountdown();
+      }
+    });
+  </script>
+</body>
+</html>
