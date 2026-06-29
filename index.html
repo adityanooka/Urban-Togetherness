@@ -1540,7 +1540,7 @@
 
     } catch (err) {
         console.error('Camera list error:', err);
-        freshSelect.innerHTML = `<option value="">${err.name === 'NotAllowedError' ? 'Permission Denied' : 'No cameras found'}</option>`;
+        freshSelect.innerHTML = `<option value="">${err && err.name === 'NotAllowedError' ? 'Permission Denied' : 'No cameras found'}</option>`;
     }
 }
 
