@@ -1,13 +1,26 @@
-# --- Heavy Folders (IGNORE THESE) ---
+# --- Python & Virtual Environment ---
 venv/
-BACKUPS/
 __pycache__/
-
-# --- Temporary Files ---
 *.pyc
-.DS_Store
 
-# --- Generated Photos (Don't upload users' faces) ---
+# --- OS Generated Files ---
+.DS_Store
+Thumbs.db
+
+# --- Temporary & Doc Files ---
+~$*
+*.tmp
+
+# --- Old Backups ---
+BACKUPS/
+old/BACKUPS/
+
+# --- Generated Photos (Don't upload users' faces/prints) ---
+photobooth-v2/static/prints/
+photobooth-v2/static/photobooth_*.jpg
+photobooth-v2/static/photobooth_*.png
+photobooth-v2/static/temp_*.png
+
+# (Catch-all for any leftover old files)
 static/photobooth_*.jpg
 static/photobooth_*.png
-static/temp_*.png
